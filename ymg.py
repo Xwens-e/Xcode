@@ -1,8 +1,9 @@
-#23/7/14
+#23/7/22
 #@xxxc137
 import os
 import requests
 
+# 设置请求的URL和Headers
 url = "http://www.ymg.one/wp-admin/admin-ajax.php?action=user_qiandao&ie=utf-8"
 headers = {
     "Connection": 'keep-alive',
@@ -20,6 +21,8 @@ if not cookies_str:
     exit()
 
 cookies_list = cookies_str.split("\n")
+
+print("///////////////签到开始///////////////")
 
 for index, cookies in enumerate(cookies_list):
     cookies = {
