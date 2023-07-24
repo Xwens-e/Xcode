@@ -1,5 +1,6 @@
 #23/7/22
 #@xxxc137
+import os
 import requests
 
 url = "https://ikuuu.art/user/checkin"
