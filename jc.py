@@ -35,8 +35,8 @@ for index, cookies in enumerate(cookies_list):
         msg = data.get('msg')
         # 提取 msg 中的数字
         flow = ''.join(filter(str.isdigit, msg))
-        result = f"账号{index + 1} 签到成功，获得 {flow} 流量"
-        print("🎉", result)
+        result = f"账号{index + 1} 签到成功，获得{flow}M流量"
+        print("🎉",result)
         result_list.append(result)
     elif ret == 0:
         print("🍻账号{} 今日已签到".format(index + 1))
