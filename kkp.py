@@ -19,23 +19,32 @@ xz5_url = "http://newapi.kukupao.top/downloadsuccess?phonetype=Mi+10&phonebrand=
 
 xz6_url = "http://newapi.kukupao.top/downloadsuccess?phonetype=Mi+10&phonebrand=Xiaomi&osversion=12&osversioncode=31&version=11.7.10&versioncode=129&channel=%E5%AE%98%E7%BD%91&channelid=1&appid=1&sw=1080&sh=2339&dt=%E6%89%8B%E6%9C%BA&network=2014&carrier=%E4%B8%AD%E5%9B%BD%E7%A7%BB%E5%8A%A8&oaid=2ac4ea344ca1d124&um_oaid=2ac4ea344ca1d124&miui=1&skin=white&cryptdata=slRv5cwa1UG1l0jhVSIg8AU90gU2Le7rKnaYtBT4tGiZ55kIKmpXVQizDliJNRN0XJoxotAB15EgEno6aaRlh%2F3PDiRyylh6apTL5fvKyDvWJxhBd7lmw6zi%2F4aPpY6r38stC5ufCHMGFiwWeQl%2BGJKLz3%2BOCz%2Ffvo1Jai%2BePOOA1cIKYc2%2FAz4Yio6FfTKJGgMVdvB39bs1nBw%2FjBiYf4a37hIW4SYyR6JbDlRNhCjSkTeGft3RBop%2BfKYWfIHKcMCJdKbrjN3KKrzu2fXZfEsdAJZI27%2BgGNItVI%2B0e8%2FQQlwFWjelYta3OuP%2FweoQjZgeF%2B7%2BGuVisU3ELbzuag%3D%3D"
 
+cx_url = "http://newapi.kukupao.top/member/getgoldenbeanlog?phonetype=Mi+10&phonebrand=Xiaomi&osversion=12&osversioncode=31&version=11.7.10&versioncode=129&channel=%E5%AE%98%E7%BD%91&channelid=1&appid=1&sw=1080&sh=2339&dt=%E6%89%8B%E6%9C%BA&network=2014&carrier=%E4%B8%AD%E5%9B%BD%E7%A7%BB%E5%8A%A8&oaid=2ac4ea344ca1d124&um_oaid=2ac4ea344ca1d124&miui=1&skin=night&cryptdata=KDlKhqmTW6%2BOGv1CX%2Bv9GxwNI84CTiRj1Rza%2BDYmGt8FHgg9KN1OlI2sCpnBebmj4MVDD%2F%2BIcO4KuV%2BJLCptnLR%2B6gaOYnM3bZtd4ybE0jNiKd611GqV0%2Bugt6AYkU0MYyenv7tTzlAakKpFFaKn2sZ2ZX5tkb2H8irZA8lQEfo%3D"
+
 print("💵开始签到:")
 for i, cookie in enumerate(cookies, 1):
-    print("账号" + str(i) + ":")
+    print("[账号]" + str(i) + ":")
     headers = {
         "Accept-Encoding": "gzip,deflate",
+        "User-Agent": "Dalvik/2.1.0 (Linux; U; Android 12; Mi 10 Build/SKQ1.211006.001)",
+        "Host": "newapi.kukupao.top",
+        "Connection": "Keep-Alive",
         "Cookie": cookie
     }
+    response = requests.get(url=cx_url, headers=headers)
+    response_data = response.json()
 
+    goldenbeannum = response_data["goldenbeannum"]
+    
     response = requests.post(url=signin_url, headers=headers)
     if response.ok:
         data = response.json()
         msg = data.get("msg")
 
         if msg == "\u4eca\u65e5\u5df2\u7b7e\u5230":
-            print("꯭🎈꯭已꯭经꯭签꯭到꯭过꯭了꯭")
+            print("今日已签到","豆币余额:",goldenbeannum)
         elif msg == "":
-            print("꯭🎉꯭签꯭到꯭成꯭功꯭")
+            print("签到成功","豆币余额:",goldenbeannum)
         elif msg == "\u7528\u6237\u9a8c\u8bc1\u5931\u8d25\uff0c\u8bf7\u91cd\u65b0\u767b\u9646":
             print("꯭❌꯭c꯭o꯭o꯭k꯭i꯭e꯭已꯭过꯭期꯭")
     else:
@@ -43,7 +52,7 @@ for i, cookie in enumerate(cookies, 1):
 
 print("\n💴开始分享:")
 for i, cookie in enumerate(cookies, 1):
-    print("账号" + str(i) + ":")
+    print("[账号]" + str(i) + ":")
     headers = {
         "Accept-Encoding": "gzip,deflate",
         "Cookie": cookie
@@ -67,7 +76,7 @@ headers = {
 
 # 遍历账号列表
 for i, cookie in enumerate(cookies):
-    print(f'账号{i+1}下载')
+    print(f'[账号]{i+1}下载')
     headers["Cookie"] = cookie
     
     xz1_response = requests.get(url=xz1_url, headers=headers)
@@ -93,7 +102,7 @@ for i, cookie in enumerate(cookies):
 
 print("\n💷开始抽奖:")
 for i, cookie in enumerate(cookies, 1):
-    print("账号" + str(i) + ":")
+    print("[账号]" + str(i) + ":")
     headers = {
         "Accept-Encoding": "gzip,deflate",
         "Cookie": cookie
@@ -105,3 +114,19 @@ for i, cookie in enumerate(cookies, 1):
         print("抽奖结束:", lottery_result)
     else:
         print("抽奖请求失败")
+        
+        
+print("\n🎉余额更新:")
+for i, cookie in enumerate(cookies, 1):
+    print("[账号]" + str(i) + ":")
+    headers = {
+        "Accept-Encoding": "gzip,deflate",
+        "User-Agent": "Dalvik/2.1.0 (Linux; U; Android 12; Mi 10 Build/SKQ1.211006.001)",
+        "Host": "newapi.kukupao.top",
+        "Connection": "Keep-Alive",
+        "Cookie": cookie
+    }
+    response = requests.get(url=cx_url, headers=headers)
+    response_data = response.json()
+    goldenbeannum = response_data["goldenbeannum"]
+    print("当前豆币:",goldenbeannum)
