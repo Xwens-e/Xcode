@@ -7,6 +7,9 @@ from bs4 import BeautifulSoup
 
 login_url = 'http://www.ymg.one/wp-login.php'
 qiandao_url = 'http://www.ymg.one/wp-admin/admin-ajax.php?action=user_qiandao&ie=utf-8'
+cx_url = 'http://www.ymg.one/user'
+
+print("///////////////开始签到///////////////")
 
 # 创建 session 对象
 session = requests.Session()
@@ -39,11 +42,16 @@ for account_password in account_passwords:
 
     # 替换为正确的登录按钮字段值
     login_data['wp-submit'] = '登录'  # 或者使用'登陆'
-
-    print("///////////////签到开始///////////////")
     
     # 发送登录请求
     response = session.post(login_url, data=login_data)
+    
+    html = response.text
+
+    soup = BeautifulSoup(html, "html.parser")
+    jinbi_element = soup.find("span", {"class": "jinbi"})
+
+    jinbi = jinbi_element.text.strip()
 
     # 检查登录是否成功
     if response.status_code == 200:
@@ -56,12 +64,13 @@ for account_password in account_passwords:
         json_response = response.json()
         if "msg" in json_response:
             if json_response["msg"] == "\u7b7e\u5230\u6210\u529f\uff0c\u8d60\u90010.5\u94bb\u77f3":
-                print("🎉签到成功，获得0.5个钻石")
+                print("🎉签到成功，获得0.5个钻石",jinbi)
             elif json_response["msg"] == "\u4eca\u65e5\u5df2\u7b7e\u5230\uff0c\u8bf7\u660e\u65e5\u518d\u6765":
-                print("📣已经签到过了")
+                print("📣已经签到过了",jinbi)
             elif json_response["msg"] == "\u8bf7\u767b\u5f55\u540e\u7b7e\u5230":
                 print("❌cookie已过期")
         else:
             print("❌请求失败")
     else:
         print(f'{account} 登录失败')
+        
