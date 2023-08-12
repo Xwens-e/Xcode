@@ -11,27 +11,22 @@ cx_url = 'http://www.ymg.one/user'
 
 print("///////////////开始签到///////////////")
 
-# 创建 session 对象
 session = requests.Session()
 
-# 获取登录页面
 login_page = session.get(login_url)
 
-# 使用 BeautifulSoup 解析页面
 soup = BeautifulSoup(login_page.content, 'html.parser')
 
-# 获取登录所需的 hidden 表单字段
 login_data = {}
 for input_tag in soup.find_all('input'):
     if input_tag.get('type') != 'hidden':
         continue
     login_data[input_tag.get('name')] = input_tag.get('value')
 
-# 设置用户名和密码
-cookies_str = os.getenv("ymgck")  # 获取外置变量 ck
-account_passwords = cookies_str.split("\n")  # 多个账号用#分隔
+cookies_str = os.getenv("ymgck") 
+account_passwords = cookies_str.split("\n")
 for account_password in account_passwords:
-    account_password_parts = account_password.split(";")  # 使用分号拆分账号和密码
+    account_password_parts = account_password.split(";")
     if len(account_password_parts) != 2:
         print(f'账号密码格式错误：{account_password}')
         continue
@@ -40,28 +35,18 @@ for account_password in account_passwords:
     login_data['log'] = account
     login_data['pwd'] = password
 
-    # 替换为正确的登录按钮字段值
-    login_data['wp-submit'] = '登录'  # 或者使用'登陆'
-    
-    # 发送登录请求
-    response = session.post(login_url, data=login_data)
-    
-    html = response.text
-
-    soup = BeautifulSoup(html, "html.parser")
-    jinbi_element = soup.find("span", {"class": "jinbi"})
-
-    jinbi = jinbi_element.text.strip()
-
-    # 检查登录是否成功
+    login_data['wp-submit'] = '登录'
+    response = session.post(login_url, data=login_data)   
     if response.status_code == 200:
-        print(f'{account} 登录成功')  # 打印账号名称
-
-        # 发送签到请求
+        print(f'{account} 登录成功')
         response = session.get(qiandao_url)
-
-        # 解析签到结果
         json_response = response.json()
+        response = session.get(cx_url)
+        html = response.text
+        soup = BeautifulSoup(html, "html.parser")
+        jinbi_element = soup.find("span", {"class": "jinbi"})
+        jinbi = jinbi_element.text.strip()
+        # 解析签到结果
         if "msg" in json_response:
             if json_response["msg"] == "\u7b7e\u5230\u6210\u529f\uff0c\u8d60\u90010.5\u94bb\u77f3":
                 print("🎉签到成功，获得0.5个钻石",jinbi)
