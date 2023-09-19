@@ -2,8 +2,10 @@
 #@xxxc137
 import os
 import requests
+from bs4 import BeautifulSoup
 
 url = "https://ikuuu.art/user/checkin"
+url2 = "https://ikuuu.art/user"
 headers = {
     "Connection": 'keep-alive',
     "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -27,16 +29,22 @@ print("///////////////////签到开始//////////////////")
 for index, cookies in enumerate(cookies_list):
     headers["Cookie"] = cookies
 
-    response = requests.post(url=url, headers=headers)
+    response = requests.post(url, headers=headers)
     data = response.json()
     ret = data.get('ret')
+    response = requests.get(url2, headers=headers)
+    html = response.text
+    soup = BeautifulSoup(html, "html.parser")
+    counter_element = soup.find("span", {"class": "counter"})
+
+    counter = counter_element.text.strip()
 
     if ret == 1:
         msg = data.get('msg')
         # 提取 msg 中的数字
         flow = ''.join(filter(str.isdigit, msg))
         result = f"账号{index + 1} 签到成功，获得{flow}M流量"
-        print("🎉",result)
+        print("🎉",result,"流量余额:",counter,"GB")
         result_list.append(result)
     elif ret == 0:
-        print("🍻账号{} 今日已签到".format(index + 1))
+        print("🍻账号{} 今日已签到".format(index + 1),"流量余额:",counter,"GB")
